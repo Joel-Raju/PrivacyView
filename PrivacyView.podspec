@@ -8,35 +8,39 @@
 
 Pod::Spec.new do |s|
   s.name             = 'PrivacyView'
-  s.version          = '0.1.0'
-  s.summary          = 'A short description of PrivacyView.'
-
-# This description is used to generate tags and improve search results.
-#   * Think: What does it do? Why did you write it? What is the focus?
-#   * Try to keep it short, snappy and to the point.
-#   * Write the description between the DESC delimiters below.
-#   * Finally, don't worry about the indent, CocoaPods strips it!
+  s.version          = '1.0.0'
+  s.summary          = 'SwiftUI privacy view — hides content from side viewers using gyroscope or TrueDepth camera.'
 
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+Software analog of Samsung Galaxy S26 Ultra's Flex Magic Pixel Privacy Display.
+Any SwiftUI view wrapped in PrivacyView is visible to the direct viewer but replaced 
+with a black overlay for shoulder-surfers detected by angle using gyroscope or ARKit face tracking.
                        DESC
 
   s.homepage         = 'https://github.com/Joel-Raju/PrivacyView'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Joel Raju' => 'joelraju@ymail.com' }
   s.source           = { :git => 'https://github.com/Joel-Raju/PrivacyView.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
-  s.ios.deployment_target = '10.0'
+  s.ios.deployment_target = '16.0'
+  s.swift_versions   = ['5.9']
 
-  s.source_files = 'PrivacyView/Classes/**/*'
-  
-  # s.resource_bundles = {
-  #   'PrivacyView' => ['PrivacyView/Assets/*.png']
-  # }
+  # Core subspec — gyroscope only, no ARKit dependency
+  s.subspec 'Core' do |core|
+    core.source_files = 'PrivacyView/Classes/Core/**/*.swift'
+    core.frameworks   = 'CoreMotion', 'SwiftUI'
+  end
 
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+  # Camera subspec — adds ARFaceAnchor engine
+  s.subspec 'Camera' do |cam|
+    cam.dependency 'PrivacyView/Core'
+    cam.source_files = 'PrivacyView/Classes/Camera/**/*.swift'
+    cam.frameworks   = 'ARKit', 'AVFoundation'
+    cam.resource_bundles = {
+      'PrivacyView' => ['PrivacyView/Classes/Camera/PrivacyInfo.xcprivacy']
+    }
+  end
+
+  # Default — include both
+  s.default_subspecs = ['Core', 'Camera']
 end

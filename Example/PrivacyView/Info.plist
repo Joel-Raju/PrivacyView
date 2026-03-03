@@ -35,5 +35,7 @@
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>PrivacyView uses the front camera to detect whether someone is looking at your screen from the side, in order to protect sensitive content.</string>
 </dict>
 </plist>
